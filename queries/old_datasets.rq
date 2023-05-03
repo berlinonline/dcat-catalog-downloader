@@ -1,0 +1,26 @@
+# Select datasets that are older than 5 years (according to their dcterms:issued date).
+
+PREFIX dcat:    <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?dataset ?title ?issued_date ?age
+WHERE {
+    ?dataset
+        a dcat:Dataset ;
+        dcterms:title ?title ;
+        dcterms:issued ?issued_date ;
+    .
+    # now() is timezoned, ?issued_date is not. In Jena 4.8.0, this means
+    # we cannot do calculations involving both. Otherwise, the following
+    # should just be: now() - ?issued_date
+    BIND(xsd:date(concat(str(year(now())), "-",
+                         str(month(now())), "-",
+                         str(day(now())))) - xsd:date(?issued_date)
+        AS ?age)
+    
+    # It would be nicer to compare to "P5Y", but that doesn't work in 
+    # Jena 4.8.0. So 5*365 = 1825.
+    FILTER(?age > xsd:duration("P1825D"))
+}
+ORDER BY ?age

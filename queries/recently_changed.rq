@@ -1,0 +1,16 @@
+# Select the 10 most recently changed datasets (according to their dcterms:modified).
+
+PREFIX dcat:    <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?dataset ?title ?modified_date
+WHERE {
+    ?dataset
+        a dcat:Dataset ;
+        dcterms:title ?title ;
+        dcterms:modified ?modified_date ;
+    .
+}
+ORDER BY DESC(?modified_date)
+LIMIT 10
