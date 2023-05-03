@@ -33,21 +33,17 @@ class DCATCatalogDownloader:
             logging.info(f"Saving catalog page: {page_url} to {page_path}")
             urllib.request.urlretrieve(page_url, page_path)
 
-
-            # self.graph = Graph()
-            # self.graph.parse(page_url)
-            # self.graph.serialize(destination=page_path)
-
     def init_parser(self):
+        output_default = 'data/temp'
         parser = argparse.ArgumentParser(
             description="Page through the DCAT-catalog endpoint of CKAN instance and save all pages into an output folder.")
         parser.add_argument('--endpoint',
                             required=True,
-                            help="Endpoint URL of the CKAN's DCAT catalog, e.g. https://datenregister.berlin.de/catalog.ttl.")
+                            help="endpoint URL of the CKAN's DCAT catalog, e.g. https://datenregister.berlin.de/catalog.ttl")
         parser.add_argument('--output',
-                            help="Path to the output folder containing the catalog pages",
+                            help=f"path to the output folder containing the catalog pages. Default is {output_default}.",
                             type=Path,
-                            default=Path('data/temp')
+                            default=Path(output_default)
                             )
 
         return parser
